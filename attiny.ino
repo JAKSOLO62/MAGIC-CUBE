@@ -20,32 +20,32 @@ void setup() {
   pinMode(ESP_ENABLE_PIN, OUTPUT);
   digitalWrite(ESP_ENABLE_PIN, LOW);
   pinMode(ESP_SIGNAL_PIN, INPUT);
-  ADCSRA &= ~(1<<ADEN); // disable ADC
-  GIMSK |= (1<<PCIE); // enable pin change interrupts
+  ADCSRA &= ~(1<<ADEN); 
+  GIMSK |= (1<<PCIE); 
   set_sleep_mode(SLEEP_MODE_PWR_DOWN);
   timed_out = false;
 }
 
 void loop() {
   if (!timed_out) {
-    PCMSK |= 1<<WAKEUP_INT_MASK; // set interrupt mask to listen on vibration sensor
+    PCMSK |= 1<<WAKEUP_INT_MASK; 
   }
   timed_out = false;
-  PCMSK |= 1<<WAKEUP_INT_MASK2; // set interrupt mask to wake on button press
+  PCMSK |= 1<<WAKEUP_INT_MASK2; 
 
   digitalWrite(LED_PIN, LOW);
-  // go to sleep
+ 
   sleep_mode();
-  // ... and we're awake
+ 
   digitalWrite(LED_PIN, HIGH);
 
-  PCMSK &= ~(1<<WAKEUP_INT_MASK | 1<<WAKEUP_INT_MASK2); // ignore interrupts for now
+  PCMSK &= ~(1<<WAKEUP_INT_MASK | 1<<WAKEUP_INT_MASK2); 
 
   digitalWrite(ESP_ENABLE_PIN, HIGH);
 
   long start_time = millis();
 
-  delay(2000); // give ESP time to initialize
+  delay(2000); 
 
   while (!digitalRead(ESP_SIGNAL_PIN)) {
     if (millis() - start_time > TIMEOUT) {
